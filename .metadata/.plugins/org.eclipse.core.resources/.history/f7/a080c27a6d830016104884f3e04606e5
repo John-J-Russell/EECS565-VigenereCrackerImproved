@@ -108,13 +108,14 @@ public class VigenereCipherTesterDriver
 		}
 		
 		m_cipherTester = new VigenereCipherTester(refinedCipherText.toCharArray(),firstWordLength,outputFinalName,keyLength);
+		//m_keyHolder = new int[keyLength];
 		
 		input.close();
 		
 		generateAllKeys();
 	}
 	
-	/* @PRE:	m_cipherTester has been constructed with valid values
+	/* @PRE:	m_keyHolder has been instantiated with the correct length, and m_cipherTester has been constructed with valid values
 	 * @POST:	Every possible key of combination keyLength will have been generated and tested in the cipherTester.testKey function
 	 * @RETURN:	none
 	 */

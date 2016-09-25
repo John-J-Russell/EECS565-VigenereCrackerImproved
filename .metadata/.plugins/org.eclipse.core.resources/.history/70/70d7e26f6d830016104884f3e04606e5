@@ -17,8 +17,9 @@ import java.util.Arrays;
 
 public class VigenereCipherTesterDriver 
 {
-	//m_cipherTester is used to test everything,
-	//was made a member variable so as to be reachable in more areas
+	//the only two member variables this class has.
+	//the VCT is for accessibility purposes, and the m_keyHolder is so a recursive
+	//function will work on it.
 	VigenereCipherTester m_cipherTester;
 	//int[] m_keyHolder;
 	
@@ -108,13 +109,14 @@ public class VigenereCipherTesterDriver
 		}
 		
 		m_cipherTester = new VigenereCipherTester(refinedCipherText.toCharArray(),firstWordLength,outputFinalName,keyLength);
+		//m_keyHolder = new int[keyLength];
 		
 		input.close();
 		
 		generateAllKeys();
 	}
 	
-	/* @PRE:	m_cipherTester has been constructed with valid values
+	/* @PRE:	m_keyHolder has been instantiated with the correct length, and m_cipherTester has been constructed with valid values
 	 * @POST:	Every possible key of combination keyLength will have been generated and tested in the cipherTester.testKey function
 	 * @RETURN:	none
 	 */

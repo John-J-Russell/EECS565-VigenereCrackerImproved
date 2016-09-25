@@ -39,12 +39,9 @@ public class VigenereCipherTester
 		m_firstSevenLetters = new Hashtable<Integer, String>(200000);
 		m_firstNineLetters = new Hashtable<Integer, String>(250000);
 		
-		//Of note: this entire section of setting up the tables and populating them can take upwards
-		//of a minute or two.
 		BufferedReader buffRead = null;
 		try
 		{
-			
 			int x=1;
 			int y=1;
 			int z=1;
@@ -114,7 +111,7 @@ public class VigenereCipherTester
 				}
 			}
 			//System.out.println(x + " " + y + " " +z);
-			System.out.println("Hashtables have been populated, generating and testing keys now...");
+			
 			buffRead.close();
 		}
 		catch(IOException e)
