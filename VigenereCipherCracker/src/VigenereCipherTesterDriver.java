@@ -21,7 +21,7 @@ public class VigenereCipherTesterDriver
 	//the VCT is for accessibility purposes, and the m_keyHolder is so a recursive
 	//function will work on it.
 	VigenereCipherTester m_cipherTester;
-	int[] m_keyHolder;
+	//int[] m_keyHolder;
 	
 	
 	//exists only as a gateway to the user input
@@ -108,8 +108,8 @@ public class VigenereCipherTesterDriver
 			System.out.println("That already exists apparently, so restart the program.");
 		}
 		
-		m_cipherTester = new VigenereCipherTester(refinedCipherText.toCharArray(),firstWordLength,outputFinalName);
-		m_keyHolder = new int[keyLength];
+		m_cipherTester = new VigenereCipherTester(refinedCipherText.toCharArray(),firstWordLength,outputFinalName,keyLength);
+		//m_keyHolder = new int[keyLength];
 		
 		input.close();
 		
@@ -123,68 +123,37 @@ public class VigenereCipherTesterDriver
 	private void generateAllKeys()
 	{
 		long startTime = System.nanoTime();
-		int[] lastCombination = new int[m_keyHolder.length];
-		for(int x=0; x<m_keyHolder.length; x++)
+		int[] lastCombination = new int[m_cipherTester.m_keyLength];
+		for(int x=0; x<m_cipherTester.m_keyLength; x++)
 		{
-			m_keyHolder[x]=0;
+			//m_keyHolder[x]=0;
 			lastCombination[x]=25;
 		}
-		
-		while(!(Arrays.equals(m_keyHolder,lastCombination)))
+		try
 		{
-			m_cipherTester.testKey(m_keyHolder);
-			incrementKey();
+			while(!(Arrays.equals(m_cipherTester.m_keyHolder,lastCombination)))
+			{
+				//If the key being tested wasn't tossed, then increment normally
+				//if it was tossed, then the corresponding spot was increased manually
+				if(m_cipherTester.testKey());
+				{
+					m_cipherTester.incrementKey();
+				}
+			}
+			//m_cipherTester.testKey(lastCombination);
+			m_cipherTester.m_keyHolder = lastCombination;
+			boolean throwaway = m_cipherTester.testKey();
 		}
-		m_cipherTester.testKey(lastCombination);
+		catch(IterationException e)
+		{
+			System.out.println("Don't want this to loop");
+		}
 		long endTime = System.nanoTime();
 		
 		long elapsedTime = endTime - startTime;
 		System.out.println(elapsedTime);
 	}
 	
-	/* @PRE:	m_keyHolder exists and is instantiated with a value
-	 * @POST:	After having called and run through incrementKeyRecursive, the key will be incremented by one
-	 * @RETURN:	none
-	 */
-	private void incrementKey()
-	{
-		int errorCheck = 0;
-		errorCheck = incrementKeyRecursive(m_keyHolder.length -1, 0);
-		if(errorCheck == 1)
-		{
-			System.out.println("The key is looping");
-		}
-	}
 	
-	/* @PRE:	Function is passed the proper numbers, where final position is the key array size -1, and the current position starts at zero
-	 * @POST:	The key is incremented much like a clock, where upon reaching 26 the value rolls over and the next highest "rung" of the key
-	 * 			increases by one each time the rollover occurs.
-	 * @RETURN:	An integer value of either zero or one. One means that the next value up must increment, while zero means it doesn't.
-	 * 			If at the highest level it returns one, then incrementKey alerts via the console of this error.
-	 */
-	private int incrementKeyRecursive(int finalPosition, int currentPosition)
-	{
-		//System.out.println(m_keyHolder[0] + "," + m_keyHolder[1]);
-		//finalPosition starts out as the length - 1, and current position starts at 0
-		if(currentPosition == finalPosition)
-		{
-			m_keyHolder[currentPosition] = m_keyHolder[currentPosition]+1;
-			if(m_keyHolder[currentPosition] > 25)
-			{
-				m_keyHolder[currentPosition] = 0;
-				return(1);
-			}
-			
-			return(0);
-		}
-		m_keyHolder[currentPosition] = m_keyHolder[currentPosition] + incrementKeyRecursive(finalPosition, currentPosition+1);
-		
-		if(m_keyHolder[currentPosition]>25)
-		{
-			m_keyHolder[currentPosition]=0;
-			return(1);
-		}
-		return(0);
-	}
 
 }

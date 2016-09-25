@@ -22,7 +22,7 @@ public class VigenereCipherTester
 	 * @POST: instantiates a VigenereCipherTester object
 	 * @RETURN: nothing
 	 */
-	VigenereCipherTester(char[] sanatizedCipherText, int firstWordLengthInput, String outputFileName)
+	VigenereCipherTester(char[] sanatizedCipherText, int firstWordLengthInput, String outputFileName, int keyLength)
 	{
 		//pass values to member variables, set up dictionary, file set up in driver
 		m_cipherText = sanatizedCipherText;
@@ -30,6 +30,8 @@ public class VigenereCipherTester
 		m_outputFileName = outputFileName;
 		m_cipherTextNumbers = new int[m_cipherText.length];
 		m_firstWordNumbersCT = new int[m_firstWordLength];
+		m_keyHolder = new int[keyLength];
+		m_keyLength = keyLength;
 		
 		m_dictionary =  new Hashtable<Integer, String>(100000);
 		m_firstThreeLetters = new Hashtable<Integer, String>(100000);
@@ -132,19 +134,21 @@ public class VigenereCipherTester
 	/* @PRE: VigenereCipherTester has been correctly instantiated, valid int[] has been passed.
 	 * @POST: Key passed to function will be tested against the first word of ciphertext. If deciphered text 
 	 * 		  forms an actual word, then decipherWholeText will be called.
-	 * @RETURN: nothing
+	 * @RETURN: true if everything went normally, false if the key has been iterated in-function
+	 * 			(meaning that the generate key function does not need to call)
+	 * @THROWS: IterationException if the in-method incrementation would cause the key to "roll over" to 0,0,0,etc.
 	 */
-	public void testKey(int[] keyHolder)
+	public boolean testKey() throws IterationException
 	{
 		//System.out.println("Testing a key: "+keyHolder[0] + "," + keyHolder[1]);
 		//tests first word of CT
-		int keyLength = keyHolder.length;
+		int keyLength = m_keyLength;
 		int tempNumber;
 		char[] firstWordDeciphered = new char[m_firstWordLength];
 		
 		for(int x=0; x<m_firstWordLength; x++)
 		{
-			tempNumber = m_firstWordNumbersCT[x] - keyHolder[x%keyLength];
+			tempNumber = m_firstWordNumbersCT[x] - m_keyHolder[x%keyLength];
 			if(tempNumber <0)
 			{
 				//this means it's negative, and has to roll around to undo the modulus
@@ -160,8 +164,21 @@ public class VigenereCipherTester
 				String first3Letters = new String(firstWordDeciphered,0,3);
 				if(!(m_firstThreeLetters.contains(first3Letters)))
 				{
+					if(m_keyLength>3)
+					{
+						m_keyHolder[x]=m_keyHolder[x]+1;
+						if(m_keyHolder[x] == 26)
+						{
+							if(m_keyHolder[0] == 25 && m_keyHolder[1] == 25 && m_keyHolder[2] == 25)
+							{
+								throw new IterationException("Out of bounds");
+							}
+							//Call recursive function with the final position being the jossed key location, let it sort it out
+							incrementKeyRecursive(x,0);
+						}
+					}
 					//System.out.println("Dumped");
-					return;
+					return(false);
 				}
 			}
 			//Checks if the first 5 letters are valid for any words of length firstWordLength
@@ -170,7 +187,20 @@ public class VigenereCipherTester
 				String first5Letters = new String(firstWordDeciphered,0,5);
 				if(!(m_firstFiveLetters.contains(first5Letters)))
 				{
-					return;
+					if(m_keyLength>5)
+					{
+						m_keyHolder[x]=m_keyHolder[x]+1;
+						if(m_keyHolder[x] == 26)
+						{
+							if(m_keyHolder[0] == 25 && m_keyHolder[1] == 25 && m_keyHolder[2] == 25 && m_keyHolder[3] == 25 && m_keyHolder[4] == 25)
+							{
+								throw new IterationException("Out of bounds");
+							}
+							//Call recursive function with the final position being the jossed key location, let it sort it out
+							incrementKeyRecursive(x,0);
+						}
+					}
+					return(false);
 				}
 			}
 			//Checks if the first 7 letters are valid for any words of length firstWordLength
@@ -179,7 +209,21 @@ public class VigenereCipherTester
 				String first7Letters = new String(firstWordDeciphered,0,7);
 				if(!(m_firstSevenLetters.contains(first7Letters)))
 				{
-					return;
+					if(m_keyLength>7)
+					{
+						m_keyHolder[x]=m_keyHolder[x]+1;
+						if(m_keyHolder[x] == 26)
+						{
+							if(m_keyHolder[0] == 25 && m_keyHolder[1] == 25 && m_keyHolder[2] == 25 && m_keyHolder[3] == 25 && m_keyHolder[4] == 25
+									&& m_keyHolder[5] == 25 && m_keyHolder[6] == 25)
+							{
+								throw new IterationException("Out of bounds");
+							}
+							//Call recursive function with the final position being the jossed key location, let it sort it out
+							incrementKeyRecursive(x,0);
+						}
+					}
+					return(false);
 				}
 			}
 			//check if valid first 9 letters
@@ -188,7 +232,22 @@ public class VigenereCipherTester
 				String first9Letters = new String(firstWordDeciphered,0,9);
 				if(!(m_firstNineLetters.contains(first9Letters)))
 				{
-					return;
+					if(m_keyLength>9)
+					{
+						//I doubt this one will ever prompt, would be a very long key.
+						m_keyHolder[x]=m_keyHolder[x]+1;
+						if(m_keyHolder[x] == 26)
+						{
+							if(m_keyHolder[0] == 25 && m_keyHolder[1] == 25 && m_keyHolder[2] == 25 && m_keyHolder[3] == 25 && m_keyHolder[4] == 25
+									&& m_keyHolder[5] == 25 && m_keyHolder[6] == 25 && m_keyHolder[7] == 25 && m_keyHolder[8] == 25)
+							{
+								throw new IterationException("Out of bounds");
+							}
+							//Call recursive function with the final position being the jossed key location, let it sort it out
+							incrementKeyRecursive(x,0);
+						}
+					}
+					return(false);
 				}
 			}
 		}
@@ -198,8 +257,10 @@ public class VigenereCipherTester
 		if(m_dictionary.contains(testThisWord))
 		{
 			System.out.println("Found a word: " + testThisWord);
-			decipherWholeText(keyHolder);
+			decipherWholeText(m_keyHolder);
 		}
+		
+		return(true);
 	}
 	
 	/* @PRE: VigenereCipherTester has been correctly instantiated, valid int[] has been passed,
@@ -253,6 +314,51 @@ public class VigenereCipherTester
 		{
 			System.out.println(e);
 		}
+	}
+	
+	/* @PRE:	m_keyHolder exists and is instantiated with a value
+	 * @POST:	After having called and run through incrementKeyRecursive, the key will be incremented by one
+	 * @RETURN:	none
+	 */
+	public void incrementKey()
+	{
+		int errorCheck = 0;
+		errorCheck = incrementKeyRecursive(m_keyHolder.length -1, 0);
+		if(errorCheck == 1)
+		{
+			System.out.println("The key is looping");
+		}
+	}
+	
+	/* @PRE:	Function is passed the proper numbers, where final position is the key array size -1, and the current position starts at zero
+	 * @POST:	The key is incremented much like a clock, where upon reaching 26 the value rolls over and the next highest "rung" of the key
+	 * 			increases by one each time the rollover occurs.
+	 * @RETURN:	An integer value of either zero or one. One means that the next value up must increment, while zero means it doesn't.
+	 * 			If at the highest level it returns one, then incrementKey alerts via the console of this error.
+	 */
+	private int incrementKeyRecursive(int finalPosition, int currentPosition)
+	{
+		//System.out.println(m_keyHolder[0] + "," + m_keyHolder[1]);
+		//finalPosition starts out as the length - 1, and current position starts at 0
+		if(currentPosition == finalPosition)
+		{
+			m_keyHolder[currentPosition] = m_keyHolder[currentPosition]+1;
+			if(m_keyHolder[currentPosition] > 25)
+			{
+				m_keyHolder[currentPosition] = 0;
+				return(1);
+			}
+			
+			return(0);
+		}
+		m_keyHolder[currentPosition] = m_keyHolder[currentPosition] + incrementKeyRecursive(finalPosition, currentPosition+1);
+		
+		if(m_keyHolder[currentPosition]>25)
+		{
+			m_keyHolder[currentPosition]=0;
+			return(1);
+		}
+		return(0);
 	}
 	
 	/* @PRE: is passed an uppercase character
@@ -342,6 +448,9 @@ public class VigenereCipherTester
 	//the first word of the numerical ciphertext
 	int[] m_firstWordNumbersCT;
 	
+	//array holding the key that is used for deciphering
+	int[] m_keyHolder;
+	
 	//the file name where the results are printed
 	String m_outputFileName;
 	
@@ -359,4 +468,7 @@ public class VigenereCipherTester
 	
 	//the length of the first word in the ciphertext
 	int m_firstWordLength;
+	
+	//length of key
+	int m_keyLength;
 }
