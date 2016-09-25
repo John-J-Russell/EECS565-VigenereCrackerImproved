@@ -1,0 +1,41 @@
+/* AUTHOR: John Russell, j362r647@ku.edu
+ * DATE: 24 September 2016
+ * FILE NAME: VigenereCipherTester.java
+ * PURPOSE: Class has multiple member variables and methods for the purpose
+ * 			of testing a given key and ciphertext to determine whether 
+ * 			or not they could be part of a valid translation.
+ */
+
+import java.util.Hashtable;
+
+public class VigenereCipherTester 
+{
+	//methods:
+	
+	/* Constructor:
+	 * @PRE: Is passed valid inputs
+	 * @POST: instantiates a VigenereCipherTester object
+	 * @RETURN: nothing
+	 */
+	VigenereCipherTester(char[] sanatizedCipherText, int firstWordLengthInput, String outputFileName)
+	{
+		//pass values to member variables, set up dictionary
+		
+	}
+	
+	/* 
+	 * 
+	 */
+	
+	
+	
+	//member variables:
+	char[] m_cipherText;
+	int[] m_cipherTextNumbers;
+	int[] m_firstWordNumbersCT;
+	String m_outputFileName;
+	Hashtable m_dictionary;
+	int firstWordLength;
+	
+	
+}

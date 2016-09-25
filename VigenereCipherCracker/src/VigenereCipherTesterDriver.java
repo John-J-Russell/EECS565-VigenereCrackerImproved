@@ -1,0 +1,190 @@
+/* AUTHOR: John Russell, j362r647@ku.edu
+ * DATE: 24 September 2016
+ * FILE NAME: VigenereCipherTesterDriver.java
+ * PURPOSE: File gathers input from user, and handles key generation for
+ * 			VigenereCipherTester.java
+ * 			Also sanatizes the user input
+ */
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Scanner;
+import java.util.Arrays;
+
+
+public class VigenereCipherTesterDriver 
+{
+	//the only two member variables this class has.
+	//the VCT is for accessibility purposes, and the m_keyHolder is so a recursive
+	//function will work on it.
+	VigenereCipherTester m_cipherTester;
+	int[] m_keyHolder;
+	
+	
+	//exists only as a gateway to the user input
+	//rendered redundant by LaunchFromHere.java
+	//done this way so as to not require making functions static
+	//I really wanted to keep the progression of this linear, and not open the
+	//ability for people to run methods without the proper order.
+	/* @PRE: none
+	 * @POST: will have called getUserInput()
+	 * @RETURN: none
+	 */
+	public void main(String[] args) 
+	{
+		getUserInput();
+	}
+	
+	/* @PRE: none
+	 * @POST: gathers input, makes tester object, instantiates m_keyHolder, calls generateAllKeys()
+	 * @RETURN: none
+	 */
+	public void getUserInput()
+	{
+		String rawCipherText;
+		String refinedCipherText;
+		String outputFileDestination;
+		String outputFinalName;
+		int firstWordLength;
+		int keyLength;
+		
+		Scanner input = new Scanner(System.in);
+		System.out.println("Please enter the ciphertext, without any punctuation.");
+		rawCipherText = input.nextLine();
+		
+		//regex edit removes all spaces, credit to StackOverflow user
+		//nitro2k01, http://stackoverflow.com/a/5455828
+		refinedCipherText=rawCipherText.replaceAll("\\s","");
+		refinedCipherText=refinedCipherText.toUpperCase();
+		System.out.println(refinedCipherText + " Is your input");
+		
+		System.out.println("Please enter the first word length. Putting letters here will break stuff, so please don't. \n"
+				+ " Use numerals, please:");
+		firstWordLength = Integer.parseInt(input.nextLine());
+		
+		System.out.println("Please give the key length, same drill:");
+		keyLength = Integer.parseInt(input.nextLine());
+		
+		
+		//////////////////
+		//This entire file section is a mess
+		//////////////////
+		
+		//Getting a valid file destination: must not exist previously, and must be a valid name.
+		System.out.println("Now enter the file name you wish to save this to.  \nGo ahead and omit the \".txt\" and don't leave any spaces. \n"
+				+ "Output file will be saved in the project-level folder.");
+		
+		outputFileDestination = input.nextLine();
+		outputFinalName = outputFileDestination+".txt";
+				
+		File filename = new File(outputFinalName);
+		if(filename.exists())
+		{
+			System.out.println("Sorry, but that name is taken. Please try again.");
+			while(filename.exists())
+			{
+				System.out.println("Now enter the file name you wish to save this to.  \nGo ahead and omit the \".txt\" and don't leave any spaces. \n"
+						+ "Output file will be saved in the project-level folder.");
+				
+				outputFileDestination = input.nextLine();
+				outputFinalName = outputFileDestination+".txt";
+				
+				filename = new File(outputFinalName);
+			}
+		}
+		
+		Path destination = Paths.get("./" + outputFinalName);
+		
+		try
+		{
+			Files.createFile(destination);
+		}
+		catch(IOException e)
+		{
+			System.out.println(e);
+			System.out.println("That already exists apparently, so restart the program.");
+		}
+		
+		m_cipherTester = new VigenereCipherTester(refinedCipherText.toCharArray(),firstWordLength,outputFinalName);
+		m_keyHolder = new int[keyLength];
+		
+		input.close();
+		
+		generateAllKeys();
+	}
+	
+	/* @PRE:	m_keyHolder has been instantiated with the correct length, and m_cipherTester has been constructed with valid values
+	 * @POST:	Every possible key of combination keyLength will have been generated and tested in the cipherTester.testKey function
+	 * @RETURN:	none
+	 */
+	private void generateAllKeys()
+	{
+		long startTime = System.nanoTime();
+		int[] lastCombination = new int[m_keyHolder.length];
+		for(int x=0; x<m_keyHolder.length; x++)
+		{
+			m_keyHolder[x]=0;
+			lastCombination[x]=25;
+		}
+		
+		while(!(Arrays.equals(m_keyHolder,lastCombination)))
+		{
+			m_cipherTester.testKey(m_keyHolder);
+			incrementKey();
+		}
+		m_cipherTester.testKey(lastCombination);
+		long endTime = System.nanoTime();
+		
+		long elapsedTime = endTime - startTime;
+		System.out.println(elapsedTime);
+	}
+	
+	/* @PRE:	m_keyHolder exists and is instantiated with a value
+	 * @POST:	After having called and run through incrementKeyRecursive, the key will be incremented by one
+	 * @RETURN:	none
+	 */
+	private void incrementKey()
+	{
+		int errorCheck = 0;
+		errorCheck = incrementKeyRecursive(m_keyHolder.length -1, 0);
+		if(errorCheck == 1)
+		{
+			System.out.println("The key is looping");
+		}
+	}
+	
+	/* @PRE:	Function is passed the proper numbers, where final position is the key array size -1, and the current position starts at zero
+	 * @POST:	The key is incremented much like a clock, where upon reaching 26 the value rolls over and the next highest "rung" of the key
+	 * 			increases by one each time the rollover occurs.
+	 * @RETURN:	An integer value of either zero or one. One means that the next value up must increment, while zero means it doesn't.
+	 * 			If at the highest level it returns one, then incrementKey alerts via the console of this error.
+	 */
+	private int incrementKeyRecursive(int finalPosition, int currentPosition)
+	{
+		//System.out.println(m_keyHolder[0] + "," + m_keyHolder[1]);
+		//finalPosition starts out as the length - 1, and current position starts at 0
+		if(currentPosition == finalPosition)
+		{
+			m_keyHolder[currentPosition] = m_keyHolder[currentPosition]+1;
+			if(m_keyHolder[currentPosition] > 25)
+			{
+				m_keyHolder[currentPosition] = 0;
+				return(1);
+			}
+			
+			return(0);
+		}
+		m_keyHolder[currentPosition] = m_keyHolder[currentPosition] + incrementKeyRecursive(finalPosition, currentPosition+1);
+		
+		if(m_keyHolder[currentPosition]>25)
+		{
+			m_keyHolder[currentPosition]=0;
+			return(1);
+		}
+		return(0);
+	}
+
+}

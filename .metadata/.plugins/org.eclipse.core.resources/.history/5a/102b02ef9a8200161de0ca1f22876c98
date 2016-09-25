@@ -1,0 +1,66 @@
+/* AUTHOR: John Russell, j362r647@ku.edu
+ * DATE: 24 September 2016
+ * FILE NAME: VigenereCipherTester.java
+ * PURPOSE: Class has multiple member variables and methods for the purpose
+ * 			of testing a given key and ciphertext to determine whether 
+ * 			or not they could be part of a valid translation.
+ */
+
+import java.util.Hashtable;
+
+public class VigenereCipherTester 
+{
+	//methods:
+	
+	/* Constructor:
+	 * @PRE: Is passed valid inputs
+	 * @POST: instantiates a VigenereCipherTester object
+	 * @RETURN: nothing
+	 */
+	VigenereCipherTester(char[] sanatizedCipherText, int firstWordLengthInput, String outputFileName)
+	{
+		//pass values to member variables, set up dictionary, file set up in driver
+		
+	}
+	
+	/* @PRE: VigenereCipherTester has been correctly instantiated, valid int[] has been passed.
+	 * @POST: Key passed to function will be tested against the first word of ciphertext. If deciphered text 
+	 * 		  forms an actual word, then decipherWholeText will be called.
+	 * @RETURN: nothing
+	 */
+	public void testKey(int[] keyHolder)
+	{
+		//tests first word of CT
+	}
+	
+	/* @PRE: VigenereCipherTester has been correctly instantiated, valid int[] has been passed,
+	 * 		 testKey has successfully translated a first word, and output file exists
+	 * @POST: Deciphered ciphertext and key are passed to writeToFile(String plaintext, String validKey)
+	 * @RETURN: none
+	 */
+	private void decipherWholeText(int[] keyHolder)
+	{
+		
+		
+		//writeToFile(toString(),toString());
+	}
+	
+	/* @PRE: decipherWholeText has successfully run
+	 * @POST: deciphered text and the corresponding key are written to a previously specified output file
+	 * @RETURN: none
+	 */
+	private void writeToFile(String plaintext, String validKey)
+	{
+		
+	}
+	
+	//member variables:
+	char[] m_cipherText;
+	int[] m_cipherTextNumbers;
+	int[] m_firstWordNumbersCT;
+	String m_outputFileName;
+	Hashtable m_dictionary;
+	int firstWordLength;
+	
+	
+}

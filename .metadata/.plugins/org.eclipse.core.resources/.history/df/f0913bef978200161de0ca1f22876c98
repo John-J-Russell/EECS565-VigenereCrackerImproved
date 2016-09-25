@@ -1,0 +1,14 @@
+/* AUTHOR: John Russell, j362r647@ku.edu
+ * DATE: 24 September 2016
+ * FILENAME: VigenereCipher
+ */
+public class ViginereCipherTesterDriver 
+{
+
+	public static void main(String[] args) 
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+}

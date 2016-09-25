@@ -1,0 +1,202 @@
+/* AUTHOR: John Russell, j362r647@ku.edu
+ * DATE: 24 September 2016
+ * FILE NAME: VigenereCipherTester.java
+ * PURPOSE: Class has multiple member variables and methods for the purpose
+ * 			of testing a given key and ciphertext to determine whether 
+ * 			or not they could be part of a valid translation.
+ */
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Hashtable;
+
+public class VigenereCipherTester 
+{
+	//methods:
+	
+	/* Constructor:
+	 * @PRE: Is passed valid inputs
+	 * @POST: instantiates a VigenereCipherTester object
+	 * @RETURN: nothing
+	 */
+	VigenereCipherTester(char[] sanatizedCipherText, int firstWordLengthInput, String outputFileName)
+	{
+		//pass values to member variables, set up dictionary, file set up in driver
+		m_cipherText = sanatizedCipherText;
+		m_firstWordLength = firstWordLengthInput;
+		m_outputFileName = outputFileName;
+		
+		m_dictionary =  new Hashtable<Integer, String>(355000);
+		BufferedReader buffRead = null;
+		try
+		{
+			int x=1;
+			String nextWord;
+			buffRead = new BufferedReader(new FileReader("words.txt"));
+			while((nextWord = buffRead.readLine())!= null)
+			{
+				m_dictionary.put(x, nextWord);
+				x++;
+			}
+			
+			buffRead.close();
+		}
+		catch(IOException e)
+		{
+			System.out.println(e);
+		}
+	
+		//cipher text numbers and first word ct numbers:
+		for(int x=0; x<m_cipherText.length; x++)
+		{
+			m_cipherTextNumbers[x]= convertToNumber(m_cipherText[x]);
+		}
+		for(int x=0; x<m_firstWordLength; x++)
+		{
+			m_firstWordNumbersCT[x] = m_cipherTextNumbers[x];
+		}
+		
+	}
+	
+	/* @PRE: VigenereCipherTester has been correctly instantiated, valid int[] has been passed.
+	 * @POST: Key passed to function will be tested against the first word of ciphertext. If deciphered text 
+	 * 		  forms an actual word, then decipherWholeText will be called.
+	 * @RETURN: nothing
+	 */
+	public void testKey(int[] keyHolder)
+	{
+		//tests first word of CT
+		int keyLength = keyHolder.length;
+		int tempNumber;
+		char[] firstWordDeciphered = new char[m_firstWordLength];
+		
+		for(int x=0; x<m_firstWordLength; x++)
+		{
+			tempNumber = m_firstWordNumbersCT[x] - keyHolder[x%keyLength];
+			if(tempNumber <0)
+			{
+				//this means it's negative, and has to roll around to undo the modulus
+				tempNumber = 26 + tempNumber;
+			}
+			firstWordDeciphered[x] = convertToLetter(tempNumber);
+		}
+	}
+	
+	/* @PRE: VigenereCipherTester has been correctly instantiated, valid int[] has been passed,
+	 * 		 testKey has successfully translated a first word, and output file exists
+	 * @POST: Deciphered ciphertext and key are passed to writeToFile(String plaintext, String validKey)
+	 * @RETURN: none
+	 */
+	private void decipherWholeText(int[] keyHolder)
+	{
+		
+		
+		//writeToFile(toString(),toString());
+	}
+	
+	/* @PRE: decipherWholeText has successfully run
+	 * @POST: deciphered text and the corresponding key are written to a previously specified output file
+	 * @RETURN: none
+	 */
+	private void writeToFile(String plaintext, String validKey)
+	{
+		
+	}
+	
+	/* @PRE: is passed an uppercase character
+	 * @POST: nothing changes
+	 * @RETURN: the integer that maps from A-Z -> 0-25
+	 */
+	public int convertToNumber(char input)
+	{
+		switch (input) 
+		{
+			case 'A': return(0);					  
+			case 'B': return(1);					  
+			case 'C': return(2);					  
+			case 'D': return(3);					  
+			case 'E': return(4);					  
+			case 'F': return(5);					  
+			case 'G': return(6);					  
+			case 'H': return(7);					  
+			case 'I': return(8);					  
+			case 'J': return(9);					  
+			case 'K': return(10);					  
+			case 'L': return(11);					  
+			case 'M': return(12);					  
+			case 'N': return(13);					  
+			case 'O': return(14);					  
+			case 'P': return(15);					  
+			case 'Q': return(16);					  
+			case 'R': return(17);					  
+			case 'S': return(18);					  
+			case 'T': return(19);					  
+			case 'U': return(20);					  
+			case 'V': return(21);					  
+			case 'W': return(22);					  
+			case 'X': return(23);					  
+			case 'Y': return(24);					  
+			case 'Z': return(25);					  
+			default: return(0);					 
+		}
+	}
+	
+	/* @PRE: is passed an integer between 0 and 25
+	 * @POST: nothing changes
+	 * @RETURN: the letter that maps from 0-25 -> A-Z
+	 */
+	public char convertToLetter(int input)
+	{
+		switch (input) 
+		{
+			case 0: return('A');					  
+			case 1: return('B');					  
+			case 2: return('C');					  
+			case 3: return('D');					  
+			case 4: return('E');					  
+			case 5: return('F');					  
+			case 6: return('G');					  
+			case 7: return('H');					  
+			case 8: return('I');					  
+			case 9: return('J');					  
+			case 10: return('K');					  
+			case 11: return('L');					  
+			case 12: return('M');					  
+			case 13: return('N');					  
+			case 14: return('O');					  
+			case 15: return('P');					  
+			case 16: return('Q');					  
+			case 17: return('R');					  
+			case 18: return('S');					  
+			case 19: return('T');					  
+			case 20: return('U');					  
+			case 21: return('V');					  
+			case 22: return('W');					  
+			case 23: return('X');					  
+			case 24: return('Y');					  
+			case 25: return('Z');					  
+			default: return('A');					 
+		}
+	}
+	
+	//member variables:
+	
+	//contains the sanatized ciphertext
+	char[] m_cipherText;
+	
+	//contains the numerical equivalents to the ciphertext
+	int[] m_cipherTextNumbers;
+	
+	//the first word of the numerical ciphertext
+	int[] m_firstWordNumbersCT;
+	
+	//the file name where the results are printed
+	String m_outputFileName;
+	
+	//A hashtable consisting of around 355,000 words
+	Hashtable<Integer, String> m_dictionary;
+	
+	//the length of the first word in the ciphertext
+	int m_firstWordLength;
+}

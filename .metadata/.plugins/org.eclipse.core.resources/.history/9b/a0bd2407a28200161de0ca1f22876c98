@@ -1,0 +1,47 @@
+/* AUTHOR: John Russell, j362r647@ku.edu
+ * DATE: 24 September 2016
+ * FILE NAME: VigenereCipherTesterDriver.java
+ * PURPOSE: File gathers input from user, and handles key generation for
+ * 			VigenereCipherTester.java
+ * 			Also sanatizes the user input
+ */
+
+//import VigenereCipherTester.java;
+import java.util.Scanner;
+
+
+public class VigenereCipherTesterDriver 
+{
+	//the only two member variables this class has.
+	//the VCT is for accessibility purposes, and the m_keyHolder is so a recursive
+	//function will work on it.
+	VigenereCipherTester m_cipherTester;
+	int[] m_keyHolder;
+	
+	public void main(String[] args) 
+	{
+		getUserInput();
+	}
+	
+	public void getUserInput()
+	{
+		Scanner input = new Scanner(System.in);
+		
+	}
+	
+	public void generateAllKeys()
+	{
+		
+	}
+	
+	private void incrementKey()
+	{
+		
+	}
+	
+	private int incrementKeyRecursive(int finalPosition, int currentPosition)
+	{
+		
+	}
+
+}
