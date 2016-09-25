@@ -32,31 +32,51 @@ public class VigenereCipherTester
 		m_firstWordNumbersCT = new int[m_firstWordLength];
 		
 		m_dictionary =  new Hashtable<Integer, String>(355000);
+		m_firstThreeLetters = new Hashtable<Integer, String>(350000);
+		m_firstFiveLetters = new Hashtable<Integer, String>(300000);
+		
 		BufferedReader buffRead = null;
 		try
 		{
 			int x=1;
+			int y=1;
+			int z=1;
 			String nextWord;
 			buffRead = new BufferedReader(new FileReader("words.txt"));
 			while((nextWord = buffRead.readLine())!= null)
 			{
-				m_dictionary.put(x, nextWord.toUpperCase());
-				x++;
+				if(nextWord.length() == m_firstWordLength)
+				{
+					m_dictionary.put(x, nextWord.toUpperCase());
+					x++;
+					if(nextWord.length() >2)
+					{
+						if(m_firstThreeLetters.contains(nextWord.substring(0,3).toUpperCase()))
+						{
+							//do nothing
+						}
+						else
+						{
+							m_firstThreeLetters.put(y, nextWord.substring(0,3).toUpperCase());
+							y++;
+						}
+					}
+					if(nextWord.length() > 4)
+					{
+						if(m_firstFiveLetters.contains(nextWord.substring(0,5).toUpperCase()))
+						{
+							
+						}
+						else
+						{
+							m_firstFiveLetters.put(z, nextWord.substring(0,5).toUpperCase());
+							z++;
+						}
+					
+					}
+				}
 			}
-			
-			/*
-			char[] test = new char[3];
-			test[0]='C';
-			test[1]='A';
-			test[2]='T';
-			String test2 = test.toString();
-			System.out.println(test2);
-			String test3 = new String(test); //THE ONLY THING THAT WORKS
-			System.out.println(test3);
-			System.out.println(m_dictionary.contains(test.toString()));
-			System.out.println(m_dictionary.contains(test2));
-			System.out.println(m_dictionary.contains(test3));
-			*/
+			System.out.println(x + " " + y + " " +z);
 			
 			buffRead.close();
 		}
@@ -99,6 +119,24 @@ public class VigenereCipherTester
 				tempNumber = 26 + tempNumber;
 			}
 			firstWordDeciphered[x] = convertToLetter(tempNumber);
+			
+			if(x==2)
+			{
+				String first3Letters = new String(firstWordDeciphered,0,3);
+				if(!(m_firstThreeLetters.contains(first3Letters)))
+				{
+					//System.out.println("Dumped");
+					return;
+				}
+			}
+			if(x == 4)
+			{
+				String first5Letters = new String(firstWordDeciphered,0,5);
+				if(!(m_firstFiveLetters.contains(first5Letters)))
+				{
+					return;
+				}
+			}
 		}
 		
 		//first word deciphered, now being checked:
@@ -255,6 +293,11 @@ public class VigenereCipherTester
 	
 	//A hashtable consisting of around 355,000 words
 	Hashtable<Integer, String> m_dictionary;
+	
+	//A hashtable consisting of all valid 3 letter word starts
+	Hashtable<Integer, String> m_firstThreeLetters;
+	
+	Hashtable<Integer,String> m_firstFiveLetters;
 	
 	//the length of the first word in the ciphertext
 	int m_firstWordLength;
