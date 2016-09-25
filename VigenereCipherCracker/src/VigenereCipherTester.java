@@ -31,9 +31,11 @@ public class VigenereCipherTester
 		m_cipherTextNumbers = new int[m_cipherText.length];
 		m_firstWordNumbersCT = new int[m_firstWordLength];
 		
-		m_dictionary =  new Hashtable<Integer, String>(355000);
-		m_firstThreeLetters = new Hashtable<Integer, String>(350000);
-		m_firstFiveLetters = new Hashtable<Integer, String>(300000);
+		m_dictionary =  new Hashtable<Integer, String>(100000);
+		m_firstThreeLetters = new Hashtable<Integer, String>(100000);
+		m_firstFiveLetters = new Hashtable<Integer, String>(150000);
+		m_firstSevenLetters = new Hashtable<Integer, String>(200000);
+		m_firstNineLetters = new Hashtable<Integer, String>(250000);
 		
 		BufferedReader buffRead = null;
 		try
@@ -41,6 +43,8 @@ public class VigenereCipherTester
 			int x=1;
 			int y=1;
 			int z=1;
+			int counter7 = 1;
+			int counter9 = 1;
 			String nextWord;
 			buffRead = new BufferedReader(new FileReader("words.txt"));
 			while((nextWord = buffRead.readLine())!= null)
@@ -49,7 +53,8 @@ public class VigenereCipherTester
 				{
 					m_dictionary.put(x, nextWord.toUpperCase());
 					x++;
-					if(nextWord.length() >2)
+					//Hashtable for valid 3 letter starts (only trips if first word is equal to or longer than 3)
+					if(nextWord.length() >2 && m_firstWordLength >2)
 					{
 						if(m_firstThreeLetters.contains(nextWord.substring(0,3).toUpperCase()))
 						{
@@ -61,7 +66,8 @@ public class VigenereCipherTester
 							y++;
 						}
 					}
-					if(nextWord.length() > 4)
+					//Hashtable for valid 5 letter starts (only trips if first word is equal to or longer than 5)
+					if(nextWord.length() > 4 && m_firstWordLength >4)
 					{
 						if(m_firstFiveLetters.contains(nextWord.substring(0,5).toUpperCase()))
 						{
@@ -73,6 +79,32 @@ public class VigenereCipherTester
 							z++;
 						}
 					
+					}
+					//Hashtable for valid 7 letter starts (only trips if first word is equal to or longer than 7)
+					if(nextWord.length() > 6 && m_firstWordLength > 6 )
+					{
+						if(m_firstSevenLetters.contains(nextWord.substring(0,7).toUpperCase()))
+						{
+							
+						}
+						else
+						{
+							m_firstSevenLetters.put(counter7, nextWord.substring(0,7).toUpperCase());
+							counter7++;
+						}
+					}
+					//Hashtable for valid 9 letter starts (only trips if first word is equal to or longer than 9)
+					if(nextWord.length() > 8 && m_firstWordLength > 8 )
+					{
+						if(m_firstNineLetters.contains(nextWord.substring(0,9).toUpperCase()))
+						{
+							
+						}
+						else
+						{
+							m_firstNineLetters.put(counter9, nextWord.substring(0,9).toUpperCase());
+							counter9++;
+						}
 					}
 				}
 			}
@@ -120,6 +152,9 @@ public class VigenereCipherTester
 			}
 			firstWordDeciphered[x] = convertToLetter(tempNumber);
 			
+			//Checks if the first 3 letters are valid for any words of length firstWordLength
+			//Note that these checks below only trip if word length is equal to or greater than
+			//the number being checked +1. Will not prompt them if length is insufficient.
 			if(x==2)
 			{
 				String first3Letters = new String(firstWordDeciphered,0,3);
@@ -129,10 +164,29 @@ public class VigenereCipherTester
 					return;
 				}
 			}
+			//Checks if the first 5 letters are valid for any words of length firstWordLength
 			if(x == 4)
 			{
 				String first5Letters = new String(firstWordDeciphered,0,5);
 				if(!(m_firstFiveLetters.contains(first5Letters)))
+				{
+					return;
+				}
+			}
+			//Checks if the first 7 letters are valid for any words of length firstWordLength
+			if(x == 6)
+			{
+				String first7Letters = new String(firstWordDeciphered,0,7);
+				if(!(m_firstSevenLetters.contains(first7Letters)))
+				{
+					return;
+				}
+			}
+			//check if valid first 9 letters
+			if(x == 8)
+			{
+				String first9Letters = new String(firstWordDeciphered,0,9);
+				if(!(m_firstNineLetters.contains(first9Letters)))
 				{
 					return;
 				}
@@ -296,8 +350,12 @@ public class VigenereCipherTester
 	
 	//A hashtable consisting of all valid 3 letter word starts
 	Hashtable<Integer, String> m_firstThreeLetters;
-	
+	//valid 5 letters
 	Hashtable<Integer,String> m_firstFiveLetters;
+	//valid 7 letters
+	Hashtable<Integer,String> m_firstSevenLetters;
+	//valid 9 letters
+	Hashtable<Integer,String> m_firstNineLetters;
 	
 	//the length of the first word in the ciphertext
 	int m_firstWordLength;
