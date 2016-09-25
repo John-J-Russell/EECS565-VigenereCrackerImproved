@@ -169,7 +169,7 @@ public class VigenereCipherTester
 						m_keyHolder[x]=m_keyHolder[x]+1;
 						if(m_keyHolder[x] == 26)
 						{
-							if(m_keyHolder[0] == 25 && m_keyHolder[1] == 25 && m_keyHolder[2] == 26)
+							if(m_keyHolder[0] == 25 && m_keyHolder[1] == 25 && m_keyHolder[2] == 25)
 							{
 								throw new IterationException("Out of bounds");
 							}
@@ -192,7 +192,7 @@ public class VigenereCipherTester
 						m_keyHolder[x]=m_keyHolder[x]+1;
 						if(m_keyHolder[x] == 26)
 						{
-							if(m_keyHolder[0] == 25 && m_keyHolder[1] == 25 && m_keyHolder[2] == 25 && m_keyHolder[3] == 25 && m_keyHolder[4] == 26)
+							if(m_keyHolder[0] == 25 && m_keyHolder[1] == 25 && m_keyHolder[2] == 25 && m_keyHolder[3] == 25 && m_keyHolder[4] == 25)
 							{
 								throw new IterationException("Out of bounds");
 							}
@@ -215,7 +215,7 @@ public class VigenereCipherTester
 						if(m_keyHolder[x] == 26)
 						{
 							if(m_keyHolder[0] == 25 && m_keyHolder[1] == 25 && m_keyHolder[2] == 25 && m_keyHolder[3] == 25 && m_keyHolder[4] == 25
-									&& m_keyHolder[5] == 25 && m_keyHolder[6] == 26)
+									&& m_keyHolder[5] == 25 && m_keyHolder[6] == 25)
 							{
 								throw new IterationException("Out of bounds");
 							}
@@ -239,7 +239,7 @@ public class VigenereCipherTester
 						if(m_keyHolder[x] == 26)
 						{
 							if(m_keyHolder[0] == 25 && m_keyHolder[1] == 25 && m_keyHolder[2] == 25 && m_keyHolder[3] == 25 && m_keyHolder[4] == 25
-									&& m_keyHolder[5] == 25 && m_keyHolder[6] == 25 && m_keyHolder[7] == 25 && m_keyHolder[8] == 26)
+									&& m_keyHolder[5] == 25 && m_keyHolder[6] == 25 && m_keyHolder[7] == 25 && m_keyHolder[8] == 25)
 							{
 								throw new IterationException("Out of bounds");
 							}
